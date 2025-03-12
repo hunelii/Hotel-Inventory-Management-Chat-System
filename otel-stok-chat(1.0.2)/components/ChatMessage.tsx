@@ -1,4 +1,4 @@
-import TypewriterEffect from './TypewriterEffect';
+import React from 'react';
 
 interface ChatMessageProps {
   message: {
@@ -11,6 +11,7 @@ interface ChatMessageProps {
 
 export default function ChatMessage({ message }: ChatMessageProps) {
   const { text, isUser, context, error } = message;
+  const safeText = text || "";
 
   return (
     <div className={`mb-4 ${isUser ? 'text-right' : 'text-left'}`}>
@@ -23,13 +24,7 @@ export default function ChatMessage({ message }: ChatMessageProps) {
             : 'bg-gray-200 text-gray-800'
         }`}
       >
-        {isUser ? (
-          <p className="whitespace-pre-wrap">{text}</p>
-        ) : (
-          <p className="whitespace-pre-wrap">
-            <TypewriterEffect text={text} speed={50} />
-          </p>
-        )}
+        <p className="whitespace-pre-wrap">{safeText}</p>
         {context && context.length > 0 && (
           <div className="mt-2 text-xs opacity-75">
             <p>İlgili stok öğeleri: {context.length}</p>

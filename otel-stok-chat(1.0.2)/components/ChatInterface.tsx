@@ -15,20 +15,17 @@ export default function ChatInterface({ conversation, updateConversation }: Chat
   const [editingMessageId, setEditingMessageId] = useState<number | null>(null);
   const [editingText, setEditingText] = useState("");
 
-  // Konuşma değiştiğinde mesajları güncelle
   useEffect(() => {
     setMessages(conversation.messages || []);
   }, [conversation]);
 
-  // Mesajlar her değiştiğinde, güncellenmiş konuşmayı üst bileşene bildir
   useEffect(() => {
-    const lastMsg = messages.length > 0 ? messages[messages.length - 1].text : "";
+    const lastMsg = messages.length > 0 ? (messages[messages.length - 1].text || "") : "";
     updateConversation({ ...conversation, messages, lastMessage: lastMsg });
   }, [messages]);
 
   const handleSendMessage = async (text: string) => {
-    if (!text.trim()) return;
-    const newMessage = { id: Date.now(), text, isUser: true };
+    const newMessage = { id: Date.now(), text: text || "", isUser: true };
     setMessages(prev => [...prev, newMessage]);
 
     setLoading(true);
@@ -36,13 +33,13 @@ export default function ChatInterface({ conversation, updateConversation }: Chat
       const response = await fetch('/api/query', {
         method: 'POST',
         headers: { 'Content-Type': 'application/json' },
-        body: JSON.stringify({ query: text })
+        body: JSON.stringify({ query: text || "" })
       });
       const data = await response.json();
       if (!response.ok) {
         throw new Error(data.error || 'Bir hata oluştu');
       }
-      const botMessage = { id: Date.now(), text: data.response, isUser: false, context: data.context };
+      const botMessage = { id: Date.now(), text: data.response || "", isUser: false, context: data.context };
       setMessages(prev => [...prev, botMessage]);
     } catch (error) {
       console.error('Mesaj gönderme hatası:', error);
@@ -55,16 +52,13 @@ export default function ChatInterface({ conversation, updateConversation }: Chat
     }
   };
 
-  // Kullanıcının düzenlediği mesajı güncelle ve buna bağlı olarak bot cevabını yeniden sorgula
   const handleEditMessage = async (id: number, newText: string) => {
-    // İlk olarak, düzenlenen mesajın metnini güncelliyoruz
     setMessages(prev =>
-      prev.map(msg => (msg.id === id ? { ...msg, text: newText } : msg))
+      prev.map(msg => (msg.id === id ? { ...msg, text: newText || "" } : msg))
     );
     setEditingMessageId(null);
     setEditingText("");
 
-    // Eğer düzenlenen mesaj kullanıcıya aitse, bu mesajın yanıtını yeniden almak için API'ye sorgu gönderiyoruz.
     const index = messages.findIndex(msg => msg.id === id);
     if (index !== -1 && messages[index].isUser) {
       setLoading(true);
@@ -72,15 +66,14 @@ export default function ChatInterface({ conversation, updateConversation }: Chat
         const response = await fetch('/api/query', {
           method: 'POST',
           headers: { 'Content-Type': 'application/json' },
-          body: JSON.stringify({ query: newText })
+          body: JSON.stringify({ query: newText || "" })
         });
         const data = await response.json();
         if (!response.ok) {
           throw new Error(data.error || 'Bir hata oluştu');
         }
-        const newBotMessage = { id: Date.now(), text: data.response, isUser: false, context: data.context };
+        const newBotMessage = { id: Date.now(), text: data.response || "", isUser: false, context: data.context };
 
-        // Eğer düzenlenen mesajın hemen sonrasında bot cevabı varsa, onu güncelle; yoksa yeni cevap ekle.
         setMessages(prev => {
           const updatedMessages = [...prev];
           if (index + 1 < updatedMessages.length && !updatedMessages[index + 1].isUser) {
@@ -110,27 +103,11 @@ export default function ChatInterface({ conversation, updateConversation }: Chat
             onDoubleClick={() => {
               if (message.isUser) {
                 setEditingMessageId(message.id);
-                setEditingText(message.text);
+                setEditingText(message.text || "");
               }
             }}
           >
-            {editingMessageId === message.id ? (
-              <input
-                type="text"
-                value={editingText}
-                onChange={(e) => setEditingText(e.target.value)}
-                onBlur={() => handleEditMessage(message.id, editingText)}
-                onKeyDown={(e) => {
-                  if (e.key === 'Enter') {
-                    handleEditMessage(message.id, editingText);
-                  }
-                }}
-                className="border p-1 rounded w-full mb-2"
-                autoFocus
-              />
-            ) : (
-              <ChatMessage message={message} />
-            )}
+            <ChatMessage message={message} />
           </div>
         ))}
         {loading && (
