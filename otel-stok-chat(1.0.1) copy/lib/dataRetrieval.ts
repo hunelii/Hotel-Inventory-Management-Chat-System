@@ -1,14 +1,14 @@
 // lib/dataRetrieval.js
 import clientPromise from './mongodb';
 
-export async function retrieveRelevantData(keywords: string | string[]) {
+export async function retrieveRelevantData(keywords) {
   try {
     const client = await clientPromise;
     const db = client.db("otelStokDB");
     const inventory = db.collection("inventory");
 
-    // Check if keywords is an array and contains "stok" or "stokta"
-    if (Array.isArray(keywords) && keywords.some(kw => ["stok", "stokta"].includes(kw))) {
+    // Eğer anahtar kelimeler arasında "stok" veya "stokta" varsa, tüm ürünleri döndür.
+    if (keywords.some(kw => ["stok", "stokta"].includes(kw))) {
       return await inventory.find({}).toArray();
     }
     
