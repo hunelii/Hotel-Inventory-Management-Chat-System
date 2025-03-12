@@ -4,7 +4,7 @@ import { classifyQuery } from '@/utils/queryParser';
 import { retrieveRelevantData } from '@/lib/dataRetrieval';
 import { getGeminiResponse } from '@/lib/gemini';
 
-export async function POST(request) {
+export async function POST(request: Request) {
   try {
     const { query } = await request.json();
     if (!query) {
