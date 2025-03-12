@@ -1,10 +1,11 @@
 import { GoogleGenerativeAI } from "@google/generative-ai";
 
-export async function getGeminiResponse(prompt, context) {
+export async function getGeminiResponse(prompt: string, context: unknown[]): Promise<string> {
   try {
     const genAI = new GoogleGenerativeAI(process.env.GEMINI_API_KEY);
     const model = genAI.getGenerativeModel({ model: "gemini-1.5-flash" });
     
+    // Build the full prompt by combining context and the user prompt.
     const fullPrompt = `
       Aşağıdaki bilgilere dayanarak, kullanıcının sorusuna yanıt ver.
       Eğer sorguda belirsizlik veya eksik bilgi varsa, önce netleştirici sorular sorarak tam olarak ne istediğini anlamaya çalış.
