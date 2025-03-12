@@ -2,7 +2,7 @@ export interface ChatMessage {
 id: number;
 text: string;
 isUser: boolean;
-context?: any[];
+context?: unknown[];
 error?: boolean;
 }
 

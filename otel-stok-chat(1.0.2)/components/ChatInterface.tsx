@@ -3,26 +3,23 @@
 import { useState, useEffect } from 'react';
 import ChatMessage from './ChatMessage';
 import ChatInput from './ChatInput';
+import { ChatMessage as ChatMessageType } from '@/lib/sessionStorage';
 
 interface ChatInterfaceProps {
-  conversation: any;
-  updateConversation: (conv: any) => void;
+  conversation: { messages: ChatMessageType[]; lastMessage: string };
+  updateConversation: (conv: { messages: ChatMessageType[]; lastMessage: string }) => void;
 }
 
 export default function ChatInterface({ conversation, updateConversation }: ChatInterfaceProps) {
-  const [messages, setMessages] = useState(conversation.messages || []);
+  const [messages, setMessages] = useState<ChatMessageType[]>(conversation.messages);
   const [loading, setLoading] = useState(false);
   const [editingMessageId, setEditingMessageId] = useState<number | null>(null);
   const [editingText, setEditingText] = useState("");
 
   useEffect(() => {
-    setMessages(conversation.messages || []);
-  }, [conversation]);
-
-  useEffect(() => {
-    const lastMsg = messages.length > 0 ? (messages[messages.length - 1].text || "") : "";
+    const lastMsg = messages.length > 0 ? messages[messages.length - 1].text : "";
     updateConversation({ ...conversation, messages, lastMessage: lastMsg });
-  }, [messages]);
+  }, [messages, conversation, updateConversation]);
 
   const handleSendMessage = async (text: string) => {
     const newMessage = { id: Date.now(), text: text || "", isUser: true };

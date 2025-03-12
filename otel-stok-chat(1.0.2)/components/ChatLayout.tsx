@@ -2,9 +2,10 @@
 
 import { useState, useEffect } from 'react';
 import ChatInterface from './ChatInterface';
+import { ChatMessage as ChatMessageType } from '@/lib/sessionStorage';
 
 export default function ChatLayout() {
-  const [conversations, setConversations] = useState<any[]>([]);
+  const [conversations, setConversations] = useState<{ id: number; title: string; messages: ChatMessageType[]; lastMessage: string }[]>([]);
   const [activeConversationId, setActiveConversationId] = useState<number | null>(null);
 
   useEffect(() => {
