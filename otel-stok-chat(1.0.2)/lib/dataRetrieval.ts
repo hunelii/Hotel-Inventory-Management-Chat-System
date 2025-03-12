@@ -1,7 +1,7 @@
 // lib/dataRetrieval.js
 import clientPromise from './mongodb';
 
-export async function retrieveRelevantData(keywords) {
+export async function retrieveRelevantData(keywords: string | string[]) {
   try {
     const client = await clientPromise;
     const db = client.db("otelStokDB");
