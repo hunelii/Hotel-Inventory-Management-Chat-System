@@ -24,10 +24,14 @@ export default function ChatInterface({ conversation, updateConversation }: Chat
     setMessages(conversation.messages || []);
   }, [conversation]);
 
+  // Update conversation only when the latest message (lastMessage) changes.
   useEffect(() => {
     const lastMsg = messages.length > 0 ? (messages[messages.length - 1].text || "") : "";
-    updateConversation({ ...conversation, messages, lastMessage: lastMsg });
-  }, [messages, conversation, updateConversation]);
+    if (lastMsg !== conversation.lastMessage) {
+      updateConversation({ ...conversation, messages, lastMessage: lastMsg });
+    }
+    // Only depend on messages. Assume conversation and updateConversation are stable.
+  }, [messages]);
 
   const handleSendMessage = async (text: string) => {
     const newMessage: Message = { id: Date.now(), text: text || "", isUser: true };
