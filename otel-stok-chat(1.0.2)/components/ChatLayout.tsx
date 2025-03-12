@@ -43,29 +43,6 @@ export default function ChatLayout() {
     localStorage.setItem('conversations', JSON.stringify(updatedConvs));
   };
 
-  const handleNewChat = () => {
-    const newConv = {
-      id: Date.now(),
-      title: "Yeni Sohbet",
-      messages: [
-        {
-          id: Date.now(),
-          text: 'Merhaba! Otel stok sistemi hakkında sorularınızı yanıtlamak için buradayım.',
-          isUser: false
-        }
-      ],
-      lastMessage: 'Merhaba! Otel stok sistemi hakkında sorularınızı yanıtlamak için buradayım.'
-    };
-    const updatedConvs = [newConv, ...conversations];
-    setConversations(updatedConvs);
-    setActiveConversationId(newConv.id);
-    localStorage.setItem('conversations', JSON.stringify(updatedConvs));
-  };
-
-  const handleSelectConversation = (id: number) => {
-    setActiveConversationId(id);
-  };
-
   const activeConversation = conversations.find(conv => conv.id === activeConversationId);
 
   return (
