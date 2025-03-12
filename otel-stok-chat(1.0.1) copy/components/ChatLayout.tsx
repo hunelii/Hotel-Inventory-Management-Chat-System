@@ -1,22 +1,22 @@
 'use client';
 
 import { useState, useEffect } from 'react';
-import ChatInterface from './ChatInterface';
+import ChatInterface, { Conversation } from './ChatInterface';
 
 export default function ChatLayout() {
-  const [conversations, setConversations] = useState<any[]>([]);
+  const [conversations, setConversations] = useState<Conversation[]>([]);
   const [activeConversationId, setActiveConversationId] = useState<number | null>(null);
 
   useEffect(() => {
     const stored = localStorage.getItem('conversations');
     if (stored) {
-      const convs = JSON.parse(stored);
+      const convs: Conversation[] = JSON.parse(stored);
       setConversations(convs);
       if (convs.length > 0) {
         setActiveConversationId(convs[0].id);
       }
     } else {
-      const initialConv = {
+      const initialConv: Conversation = {
         id: Date.now(),
         title: "Yeni Sohbet",
         messages: [
@@ -34,7 +34,7 @@ export default function ChatLayout() {
     }
   }, []);
 
-  const updateConversation = (updatedConversation: any) => {
+  const updateConversation = (updatedConversation: Conversation) => {
     const updatedConvs = conversations.map(conv =>
       conv.id === updatedConversation.id ? updatedConversation : conv
     );
@@ -43,7 +43,7 @@ export default function ChatLayout() {
   };
 
   const handleNewChat = () => {
-    const newConv = {
+    const newConv: Conversation = {
       id: Date.now(),
       title: "Yeni Sohbet",
       messages: [

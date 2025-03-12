@@ -1,19 +1,28 @@
 'use client';
 
 import { useState, useEffect } from 'react';
-import ChatMessage from './ChatMessage';
+import ChatMessage, { Message } from './ChatMessage';
 import ChatInput from './ChatInput';
 
+export interface Conversation {
+  id: number;
+  title: string;
+  messages: Message[];
+  lastMessage: string;
+}
+
 interface ChatInterfaceProps {
-  conversation: any;
-  updateConversation: (conv: any) => void;
+  conversation: Conversation;
+  updateConversation: (conv: Conversation) => void;
 }
 
 export default function ChatInterface({ conversation, updateConversation }: ChatInterfaceProps) {
-  const [messages, setMessages] = useState(conversation.messages || []);
+  const [messages, setMessages] = useState<Message[]>(conversation.messages || []);
   const [loading, setLoading] = useState(false);
-  const [editingMessageId, setEditingMessageId] = useState<number | null>(null);
-  const [editingText, setEditingText] = useState("");
+  // editingMessageId and editingText can be implemented later if you need full editing support
+  // For now, if they're not used, you may remove them or comment them out.
+  // const [editingMessageId, setEditingMessageId] = useState<number | null>(null);
+  // const [editingText, setEditingText] = useState("");
 
   useEffect(() => {
     setMessages(conversation.messages || []);
@@ -22,10 +31,10 @@ export default function ChatInterface({ conversation, updateConversation }: Chat
   useEffect(() => {
     const lastMsg = messages.length > 0 ? (messages[messages.length - 1].text || "") : "";
     updateConversation({ ...conversation, messages, lastMessage: lastMsg });
-  }, [messages]);
+  }, [messages, conversation, updateConversation]);
 
   const handleSendMessage = async (text: string) => {
-    const newMessage = { id: Date.now(), text: text || "", isUser: true };
+    const newMessage: Message = { id: Date.now(), text: text || "", isUser: true };
     setMessages(prev => [...prev, newMessage]);
 
     setLoading(true);
@@ -37,57 +46,18 @@ export default function ChatInterface({ conversation, updateConversation }: Chat
       });
       const data = await response.json();
       if (!response.ok) {
-        throw new Error(data.error || 'Bir hata oluştu');
+        throw new Error(data.error || 'An error occurred');
       }
-      const botMessage = { id: Date.now(), text: data.response || "", isUser: false, context: data.context };
+      const botMessage: Message = { id: Date.now(), text: data.response || "", isUser: false, context: data.context };
       setMessages(prev => [...prev, botMessage]);
     } catch (error) {
-      console.error('Mesaj gönderme hatası:', error);
+      console.error('Error sending message:', error);
       setMessages(prev => [
         ...prev,
-        { id: Date.now(), text: 'Üzgünüm, bir hata oluştu. Lütfen tekrar deneyin.', isUser: false, error: true }
+        { id: Date.now(), text: 'Sorry, an error occurred. Please try again.', isUser: false, error: true }
       ]);
     } finally {
       setLoading(false);
-    }
-  };
-
-  const handleEditMessage = async (id: number, newText: string) => {
-    setMessages(prev =>
-      prev.map(msg => (msg.id === id ? { ...msg, text: newText || "" } : msg))
-    );
-    setEditingMessageId(null);
-    setEditingText("");
-
-    const index = messages.findIndex(msg => msg.id === id);
-    if (index !== -1 && messages[index].isUser) {
-      setLoading(true);
-      try {
-        const response = await fetch('/api/query', {
-          method: 'POST',
-          headers: { 'Content-Type': 'application/json' },
-          body: JSON.stringify({ query: newText || "" })
-        });
-        const data = await response.json();
-        if (!response.ok) {
-          throw new Error(data.error || 'Bir hata oluştu');
-        }
-        const newBotMessage = { id: Date.now(), text: data.response || "", isUser: false, context: data.context };
-
-        setMessages(prev => {
-          const updatedMessages = [...prev];
-          if (index + 1 < updatedMessages.length && !updatedMessages[index + 1].isUser) {
-            updatedMessages[index + 1] = newBotMessage;
-          } else {
-            updatedMessages.push(newBotMessage);
-          }
-          return updatedMessages;
-        });
-      } catch (error) {
-        console.error('Yeni cevap alınırken hata:', error);
-      } finally {
-        setLoading(false);
-      }
     }
   };
 
@@ -98,15 +68,7 @@ export default function ChatInterface({ conversation, updateConversation }: Chat
       </div>
       <div className="flex-1 overflow-y-auto p-4">
         {messages.map((message) => (
-          <div
-            key={message.id}
-            onDoubleClick={() => {
-              if (message.isUser) {
-                setEditingMessageId(message.id);
-                setEditingText(message.text || "");
-              }
-            }}
-          >
+          <div key={message.id}>
             <ChatMessage message={message} />
           </div>
         ))}

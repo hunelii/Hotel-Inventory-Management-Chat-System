@@ -1,12 +1,15 @@
 import React from 'react';
 
+export interface Message {
+  id: number;
+  text: string;
+  isUser: boolean;
+  context?: unknown[];
+  error?: boolean;
+}
+
 interface ChatMessageProps {
-  message: {
-    text: string;
-    isUser: boolean;
-    context?: any[];
-    error?: boolean;
-  };
+  message: Message;
 }
 
 export default function ChatMessage({ message }: ChatMessageProps) {
