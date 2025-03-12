@@ -1,10 +1,10 @@
-import { NextResponse } from 'next/server';
+import { NextResponse, NextRequest } from 'next/server';
 import clientPromise from '@/lib/mongodb';
 import { classifyQuery } from '@/utils/queryParser';
 import { retrieveRelevantData } from '@/lib/dataRetrieval';
 import { getGeminiResponse } from '@/lib/gemini';
 
-export async function POST(request) {
+export async function POST(request: NextRequest) {
   try {
     const { query } = await request.json();
     if (!query) {
