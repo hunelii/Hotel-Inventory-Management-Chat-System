@@ -1,11 +1,12 @@
-// lib/dataRetrieval.ts
 import clientPromise from './mongodb';
+import { InventoryItem } from '@/models/Inventory';
 
-export async function retrieveRelevantData(keywords: string[]): Promise<any[]> {
+export async function retrieveRelevantData(keywords: string[]): Promise<InventoryItem[]> {
   try {
     const client = await clientPromise;
     const db = client.db("otelStokDB");
-    const inventory = db.collection("inventory");
+    // Provide a generic type for the collection so TypeScript knows the shape.
+    const inventory = db.collection<InventoryItem>("inventory");
 
     // If keywords includes "stok" or "stokta", return all products.
     if (keywords.some(kw => ["stok", "stokta"].includes(kw))) {
