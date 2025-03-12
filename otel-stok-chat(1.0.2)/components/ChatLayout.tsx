@@ -35,7 +35,7 @@ export default function ChatLayout() {
     }
   }, []);
 
-  const updateConversation = (updatedConversation: any) => {
+  const updateConversation = (updatedConversation: { id: number; title: string; messages: ChatMessageType[]; lastMessage: string }) => {
     const updatedConvs = conversations.map(conv =>
       conv.id === updatedConversation.id ? updatedConversation : conv
     );
