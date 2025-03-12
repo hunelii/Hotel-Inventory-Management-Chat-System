@@ -1,18 +1,18 @@
-// lib/dataRetrieval.js
+// lib/dataRetrieval.ts
 import clientPromise from './mongodb';
 
-export async function retrieveRelevantData(keywords) {
+export async function retrieveRelevantData(keywords: string[]): Promise<any[]> {
   try {
     const client = await clientPromise;
     const db = client.db("otelStokDB");
     const inventory = db.collection("inventory");
 
-    // Eğer anahtar kelimeler arasında "stok" veya "stokta" varsa, tüm ürünleri döndür.
+    // If keywords includes "stok" or "stokta", return all products.
     if (keywords.some(kw => ["stok", "stokta"].includes(kw))) {
       return await inventory.find({}).toArray();
     }
-    
-    // Anahtar kelimelere göre sorgu oluşturma
+
+    // Build query conditions for each keyword.
     const queryConditions = keywords.map(keyword => ({
       $or: [
         { urunAdi: { $regex: keyword, $options: 'i' } },
@@ -22,7 +22,6 @@ export async function retrieveRelevantData(keywords) {
       ]
     }));
 
-    // Sorgu koşulları varsa onları kullan, yoksa boş obje ile sorgu yap.
     const query = queryConditions.length > 0 ? { $or: queryConditions } : {};
     const data = await inventory.find(query).limit(10).toArray();
     return data;
