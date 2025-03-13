@@ -16,25 +16,17 @@ export default function ChatLayout() {
         setActiveConversationId(convs[0].id);
       }
     } else {
-      const initialMessage = `Merhaba! Otel stok yönetim sistemi için AI destekli sohbet asistanına hoş geldiniz.
-      
-Örnek sorular:
-- "Stokta ne var?"
-- "Norveç Somonu hakkında detaylı bilgi verir misin?"
-- "Levrek'in alternatifleri nelerdir?"
-
-Nasıl ilerleyeceğiniz konusunda yardım almak için sorularınızı açık ve detaylı yazabilirsiniz.`;
       const initialConv: Conversation = {
         id: Date.now(),
         title: "Yeni Sohbet",
         messages: [
           {
             id: Date.now(),
-            text: initialMessage,
+            text: 'Merhaba! Otel stok sistemi hakkında sorularınızı yanıtlamak için buradayım.',
             isUser: false
           }
         ],
-        lastMessage: initialMessage
+        lastMessage: 'Merhaba! Otel stok sistemi hakkında sorularınızı yanıtlamak için buradayım.'
       };
       setConversations([initialConv]);
       setActiveConversationId(initialConv.id);
@@ -51,25 +43,17 @@ Nasıl ilerleyeceğiniz konusunda yardım almak için sorularınızı açık ve 
   };
 
   const handleNewChat = () => {
-    const welcomeMessage = `Merhaba! Otel stok yönetim sistemi için AI destekli sohbet asistanına hoş geldiniz.
-    
-Örnek sorular:
-- "Stokta ne var?"
-- "Norveç Somonu hakkında detaylı bilgi verir misin?"
-- "Levrek'in alternatifleri nelerdir?"
-
-Lütfen sorularınızı açık ve detaylı yazın, böylece size en iyi şekilde yardımcı olabilirim.`;
     const newConv: Conversation = {
       id: Date.now(),
       title: "Yeni Sohbet",
       messages: [
         {
           id: Date.now(),
-          text: welcomeMessage,
+          text: 'Merhaba! Otel stok sistemi hakkında sorularınızı yanıtlamak için buradayım.',
           isUser: false
         }
       ],
-      lastMessage: welcomeMessage
+      lastMessage: 'Merhaba! Otel stok sistemi hakkında sorularınızı yanıtlamak için buradayım.'
     };
     const updatedConvs = [newConv, ...conversations];
     setConversations(updatedConvs);
