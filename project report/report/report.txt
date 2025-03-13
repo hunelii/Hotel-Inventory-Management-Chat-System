@@ -1,0 +1,90 @@
+İçerik
+Giriş: Proje Özeti
+Kullanılan Teknolojiler
+2.1. Frontend
+2.2. Backend
+2.3. MongoDB İletişimi
+2.4. Chatbot API Entegrasyonu
+2.5. Deploy ve TypeScript Revizyonu
+Süreçte AI Kullanımı
+3.1. Kullanılan AI Araçları (Gemini, ChatGPT, Claude, Bolt.new, Cursor)
+3.2. AI Araçlarının Kullanım Süreci
+Chatbot Finetuning Süreci
+4.1. Prompt İkilileri ve Self Prompting Yapısı
+4.2. RAG (Retrieval-Augmented Generation) Kullanımı
+Deploy Sürecinde Vercel için Debugging ve TypeScript Problemlerinin Çözümü
+Test ve User Experience Geri Dönüşlerine Bağlı Geliştirme
+GitHub'da Kullanılan Sürüm Sistemi ve Branching Stratejisi
+1. Giriş: Proje Özeti
+Proje, turizm sektöründe otel işletmelerinin stok yönetim sisteminde bulunan ürünler, kodlar ve alternatif bilgiler hakkında, otel çalışanlarının doğal dilde sorduğu sorulara yanıt verebilen AI destekli dinamik bir sohbet uygulaması geliştirmeye yöneliktir. Bu sistem sayesinde, örneğin kullanıcı bir balık türünü sorduğunda, yapay zeka botu ilgili balık türü ve benzer alternatifleri, ürün kodları ile birlikte sunabilmektedir. Proje aynı zamanda adayın kod yazım tarzı, AI araçları entegrasyon becerisi ve problem çözme yaklaşımını da ortaya koymayı amaçlamaktadır.
+
+2. Kullanılan Teknolojiler
+2.1. Frontend
+Next.js: Modern, dinamik ve SEO dostu kullanıcı arayüzleri oluşturmak için kullanıldı.
+React ve TypeScript: UI bileşenleri, state yönetimi ve tip güvenliği sağlamak için tercih edildi.
+Tailwind CSS: Hızlı ve esnek stil oluşturma imkanı sunarak, hem açık hem de koyu (dark mode) temalı arayüz tasarımları oluşturuldu.
+2.2. Backend
+Node.js & Next.js API Routes: Chatbot API endpointleri ve sunucu tarafı işlemleri için kullanıldı.
+TypeScript: Güçlü tip kontrolü sayesinde hata oranını azaltmak ve kodun bakımını kolaylaştırmak amacıyla kullanıldı.
+2.3. MongoDB İletişimi
+MongoDB Atlas: Stok verileri ve diğer ilgili verilerin saklanması için kullanıldı.
+Node.js MongoDB Driver: mongodb.ts dosyası aracılığıyla veritabanı bağlantısı sağlandı. .env dosyasında tanımlı bağlantı dizesi (MONGODB_URI) kullanıldı.
+2.4. Chatbot API Entegrasyonu
+Gemini 2.0 Flash veya Alternatif AI Araçları (OpenAI, ChatGPT, Claude, Bolt.new, Cursor):
+Projede, AI destekli sohbet motorunun entegre edilmesi için Gemini API tercih edildi. Bu API, kullanıcının sorgularını, ilgili stok verilerini ve diğer bağlamı kullanarak dinamik yanıtlar üretmek üzere konfigüre edildi.
+2.5. Deploy ve TypeScript Revizyonu
+Vercel: Projenin hızlı bir şekilde yayına alınması ve otomatik CI/CD süreçlerinin sağlanması için kullanıldı.
+TypeScript Revizyonları: Deploy sürecinde Vercel üzerinde karşılaşılan tip hataları, ESLint ve TypeScript uyarıları detaylıca ele alınarak düzeltilmiştir.
+3. Süreçte AI Kullanımı
+3.1. Kullanılan AI Araçları
+Projede AI destekli sohbet motoru için kullanılan ana araçlar:
+
+Gemini 2.0 Flash: Ana model olarak kullanıldı.
+ChatGPT, Claude, Bolt.new, Cursor: Proje sürecinde alternatif yaklaşımları değerlendirmek için referans olarak incelendi.
+3.2. AI Araçlarının Kullanım Süreci
+Temel Proje Mimarisi Oluşturuldu:
+Proje yapısı, Next.js, React ve Node.js tabanlı olarak oluşturuldu. API endpoint’leri ve MongoDB entegrasyonu sağlandı.
+Environment Bağlantıları Yapıldı:
+.env veya .env.local dosyaları üzerinden MONGODB_URI ve GEMINI_API_KEY gibi gerekli environment değişkenleri tanımlandı.
+Gemini API Entegrasyonu:
+lib/gemini.ts dosyasında, Gemini API çağrıları yapılarak, kullanıcı sorgusuna dayalı detaylı yanıtlar üretildi. Prompt içine stok bilgileri ve kullanıcı sorgusu eklenerek, AI’nın bağlamı doğru yorumlaması sağlandı.
+Alternatif AI Araçları Değerlendirildi:
+ChatGPT, Claude gibi araçların entegrasyon süreçleri incelendi; ancak projenin gereksinimleri doğrultusunda Gemini API tercih edildi.
+4. Chatbot Finetuning Süreci
+4.1. Prompt İkilileri ve Self Prompting Yapısı
+Prompt İkilileri Oluşturuldu:
+Kullanıcı sorguları ile stok bağlamı arasında eşleşmeyi sağlamak için, Gemini API’ye gönderilen prompt metni detaylandırıldı. Bu metin, AI’nın soruyu doğru analiz etmesi ve gerekirse ek açıklamalar talep etmesi amacıyla revize edildi.
+Self Prompting Yapısı Kuruldu:
+AI, sorgu içerisinde eksik bilgi algıladığında, öncelikle netleştirici sorular sorarak hangi ek bilgilere ihtiyaç duyulduğunu belirtmek üzere yönlendirildi.
+4.2. RAG (Retrieval-Augmented Generation) Kullanımı
+Tokenlar Gruplandı:
+Kullanıcı tarafından girilen sorgular, basit bir anahtar kelime çıkarma algoritması ile işlenerek, stok verilerinden ilgili kısımlar çekildi.
+Bağlama Göre Cevap Üretimi:
+Örneğin, günlük hayatla ilgili genel sorular için genel bağlam, direkt stok ile ilgili sorgular için ise sadece stok bilgileri kullanılarak cevap üretildi.
+5. Deploy Sürecinde Vercel için Özel Debugging ve TypeScript Problemlerinin Çözümü
+Vercel Üzerinde Build Hatalarının Giderilmesi:
+Deploy sürecinde karşılaşılan TypeScript ve ESLint hataları, ilgili dosyalarda tip güncellemeleri yapılarak çözüldü (örneğin, Next.js API route’larında NextRequest kullanımı, MongoDB bağlantı dosyasında global değişkenlerin revizesi, queryParser ve dataRetrieval dosyalarında tip güvenliği sağlandı).
+Serverless Function İsimlendirme Sorunları:
+Proje adının ve package.json’daki "name" alanının basitleştirilmesi, özel karakterlerden arındırılması sağlanarak, Vercel’in sunucu işlevi isimlendirme kısıtlamalarına uygun hale getirildi.
+Environment Variables:
+Vercel dashboard’u üzerinden gerekli environment değişkenleri (MONGODB_URI, GEMINI_API_KEY) doğru şekilde tanımlandı.
+6. Test ve User Experience Geri Dönüşlerine Bağlı Geliştirme
+Kullanıcı Testleri:
+Uygulamanın yerel geliştirme ortamında ve Vercel’de canlı olarak test edilmesiyle, kullanıcı deneyimi gözlemlendi.
+Geri Bildirim Toplama:
+API logları ve MongoDB’de toplanan "feedback" verileri incelenerek, hangi sorguların yeterince net olmadığını belirleme çalışmaları yapıldı.
+İteratif İyileştirme:
+Toplanan geri bildirimler doğrultusunda, prompt metinleri, query sınıflandırması ve retrieval mantığı üzerinde düzenlemeler yapıldı.
+7. GitHub'da Kullanılan Sürüm Sistemi ve Branching Stratejisi
+Git Kullanımı:
+Tüm kaynak kodu GitHub üzerinden sürüm kontrolü ile yönetildi.
+Branching Stratejisi:
+Ana Dal (main): Üretim kodu.
+Geliştirme Dalları (feature branches): Yeni özelliklerin eklenmesi veya iyileştirme çalışmalarının yapılması için ayrı dallar oluşturuldu.
+Pull Request İncelemesi: Değişiklikler merge edilmeden önce, kod gözden geçirme süreçleri gerçekleştirildi.
+Commit Mesajları ve Sürüm Numaralandırması:
+Commit mesajları, yapılan değişikliklerin net bir şekilde belirtilmesi için standartlara uygun şekilde yazıldı. Sürüm numaralandırması, projenin ilerlemesini izlemek amacıyla düzenli olarak güncellendi.
+Sonuç
+Bu rapor, AI destekli otel stok yönetim sohbet uygulamasının geliştirilme sürecini baştan sona ayrıntılı olarak ele almaktadır. Proje, Next.js, Node.js, MongoDB, ve Gemini API gibi modern teknolojiler kullanılarak geliştirilmiş; AI araçları entegrasyonu, prompt fine-tuning, retrieval stratejileri ve Vercel üzerinde deploy gibi aşamalar başarıyla tamamlanmıştır. Ayrıca, GitHub üzerinden sürüm kontrolü ve branching stratejisiyle de proje yönetimi titizlikle yürütülmüştür.
+
+Bu kapsamlı süreç sayesinde, adayın kod yazım tarzı, AI entegrasyonu ve problem çözme yaklaşımları değerlendirilebilmiş, aynı zamanda gerçek dünya uygulamalarında kullanılabilecek ölçeklenebilir bir çözüm ortaya konulmuştur.
