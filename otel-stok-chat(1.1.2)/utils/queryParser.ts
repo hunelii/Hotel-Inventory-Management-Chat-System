@@ -9,7 +9,6 @@ export function classifyQuery(query: string): { type: "greeting" | "stock"; keyw
     return { type: "greeting", keywords: [] };
   }
 
-  // You can add more domain-specific stop words or synonyms here if needed.
   const stopWords = ["bu", "ne", "nedir", "nasıl", "hangi", "ve", "veya", "için"];
   const words = lowerQuery.split(/\s+/);
   const keywords = words

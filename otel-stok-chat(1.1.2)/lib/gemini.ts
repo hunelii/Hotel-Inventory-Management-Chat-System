@@ -1,4 +1,3 @@
-// lib/gemini.ts
 import { GoogleGenerativeAI } from "@google/generative-ai";
 
 export async function getGeminiResponse(prompt: string, context: unknown[]): Promise<string> {
@@ -10,10 +9,10 @@ export async function getGeminiResponse(prompt: string, context: unknown[]): Pro
     const genAI = new GoogleGenerativeAI(geminiApiKey);
     const model = genAI.getGenerativeModel({ model: "gemini-1.5-flash" });
     
-    // Refined prompt template with clear instructions
+    // Build the full prompt by combining context and the user prompt.
     const fullPrompt = `
-      Aşağıdaki stok bilgilerine dayanarak, kullanıcının sorusuna detaylı yanıt ver.
-      Eğer sorguda belirsizlik varsa veya ek bilgi gerekiyorsa, lütfen önce netleştirici sorular sorarak eksik bilgiyi tamamlayın.
+      Aşağıdaki bilgilere dayanarak, kullanıcının sorusuna yanıt ver.
+      Eğer sorguda belirsizlik veya eksik bilgi varsa, önce netleştirici sorular sorarak tam olarak ne istediğini anlamaya çalış.
       
       STOK BİLGİLERİ:
       ${JSON.stringify(context)}
@@ -21,7 +20,7 @@ export async function getGeminiResponse(prompt: string, context: unknown[]): Pro
       KULLANICI SORUSU:
       ${prompt}
       
-      Yanıtınızı yalnızca mevcut stok bilgilerine dayandırın. Eğer yeterli veri yoksa, hangi bilgilerin gerektiğini belirtin.
+      Lütfen yalnızca verilen stok bilgilerine dayanarak yanıt oluştur. Eğer sorguyla ilgili yeterli veri yoksa, bunu belirtip ek sorular sorun.
     `;
     
     const result = await model.generateContent(fullPrompt);

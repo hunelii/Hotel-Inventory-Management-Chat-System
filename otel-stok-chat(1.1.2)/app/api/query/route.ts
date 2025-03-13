@@ -11,21 +11,22 @@ export async function POST(request: NextRequest) {
       return NextResponse.json({ error: 'Sorgu boş olamaz' }, { status: 400 });
     }
     
-    // Classify the query.
+    // Sorguyu sınıflandırın
     const { type, keywords } = classifyQuery(query);
     
-    // If it's a greeting, reply immediately.
+    // Eğer sorgu bir selamlama ise
     if (type === "greeting") {
       return NextResponse.json({ response: "Merhaba! Otel stok sistemi hakkında nasıl yardımcı olabilirim?" });
     }
     
+    // MongoDB bağlantısını al
     const client = await clientPromise;
     const db = client.db("otelStokDB");
     
-    // Retrieve relevant inventory data.
+    // İlgili verileri getir
     const relevantData = await retrieveRelevantData(keywords);
     
-    // If no relevant data is found, log the query as feedback.
+    // Eğer stok verisi boşsa, geri bildirim olarak sorguyu loglayın
     if (relevantData.length === 0) {
       try {
         const feedback = {
@@ -42,7 +43,7 @@ export async function POST(request: NextRequest) {
       });
     }
     
-    // Get the response from Gemini API.
+    // Gemini AI'dan yanıt al
     const aiResponse = await getGeminiResponse(query, relevantData);
     return NextResponse.json({ response: aiResponse, context: relevantData });
   } catch (error) {
