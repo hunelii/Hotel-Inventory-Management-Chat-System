@@ -8,13 +8,7 @@ export async function getGeminiResponse(prompt: string, context: unknown[]): Pro
       throw new Error("GEMINI_API_KEY is not defined");
     }
     const genAI = new GoogleGenerativeAI(geminiApiKey);
-// Inside getGeminiResponse in lib/gemini.ts, after obtaining the model:
-const model = genAI.getGenerativeModel({ 
-  model: "gemini-1.5-flash",
-  // Example parameter: lower temperature for more deterministic responses
-  temperature: 0.3  
-});
-
+    const model = genAI.getGenerativeModel({ model: "gemini-1.5-flash" });
     
     // Refined prompt template with clear instructions
     const fullPrompt = `
