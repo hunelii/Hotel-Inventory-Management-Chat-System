@@ -20,18 +20,22 @@ export default function ChatInterface({ conversation, updateConversation }: Chat
   const [messages, setMessages] = useState<Message[]>(conversation.messages || []);
   const [loading, setLoading] = useState(false);
 
+  // Update local messages if the conversation prop changes.
   useEffect(() => {
     setMessages(conversation.messages || []);
   }, [conversation]);
 
-  // Update conversation title and lastMessage when messages change.
+  // Debounce updating the parent conversation state to avoid constant re-renders.
   useEffect(() => {
-    const lastMsg = messages.length > 0 ? (messages[messages.length - 1].text || "") : "";
-    // Find the first user message; if available, use its first 20 characters as title.
-    const userMsg = messages.find(m => m.isUser)?.text;
-    const updatedTitle = userMsg ? userMsg.slice(0, 20) : conversation.title;
-    updateConversation({ ...conversation, messages, lastMessage: lastMsg, title: updatedTitle });
-  }, [messages, conversation, updateConversation]);
+    const timeoutId = setTimeout(() => {
+      const lastMsg = messages.length > 0 ? (messages[messages.length - 1].text || "") : "";
+      // Update the conversation title based on the first user message, if available.
+      const userMsg = messages.find(m => m.isUser)?.text;
+      const updatedTitle = userMsg ? userMsg.slice(0, 20) : conversation.title;
+      updateConversation({ ...conversation, messages, lastMessage: lastMsg, title: updatedTitle });
+    }, 500); // Wait 500ms after the last message change.
+    return () => clearTimeout(timeoutId);
+  }, [messages]);
 
   const handleSendMessage = async (text: string) => {
     const newMessage: Message = { id: Date.now(), text: text || "", isUser: true };
@@ -46,15 +50,15 @@ export default function ChatInterface({ conversation, updateConversation }: Chat
       });
       const data = await response.json();
       if (!response.ok) {
-        throw new Error(data.error || 'Bir hata oluştu');
+        throw new Error(data.error || 'An error occurred');
       }
       const botMessage: Message = { id: Date.now(), text: data.response || "", isUser: false, context: data.context };
       setMessages(prev => [...prev, botMessage]);
     } catch (error) {
-      console.error('Mesaj gönderme hatası:', error);
+      console.error('Error sending message:', error);
       setMessages(prev => [
         ...prev,
-        { id: Date.now(), text: 'Üzgünüm, bir hata oluştu. Lütfen tekrar deneyin.', isUser: false, error: true }
+        { id: Date.now(), text: 'Sorry, an error occurred. Please try again.', isUser: false, error: true }
       ]);
     } finally {
       setLoading(false);
