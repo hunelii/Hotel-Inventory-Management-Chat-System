@@ -69,7 +69,6 @@ export default function ChatLayout() {
 
   return (
     <div className="flex h-screen bg-gray-100 dark:bg-gray-900">
-      {/* Sidebar */}
       <aside className="w-64 bg-gray-800 dark:bg-gray-700 text-white flex flex-col">
         <div className="p-4 border-b border-gray-700">
           <h1 className="text-xl font-bold">Sohbet Geçmişi</h1>
@@ -101,7 +100,6 @@ export default function ChatLayout() {
           </button>
         </div>
       </aside>
-      {/* Main Chat Area */}
       <main className="flex-1 p-4">
         {activeConversation ? (
           <ChatInterface conversation={activeConversation} updateConversation={updateConversation} />

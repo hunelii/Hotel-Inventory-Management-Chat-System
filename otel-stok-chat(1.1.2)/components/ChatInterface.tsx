@@ -24,9 +24,13 @@ export default function ChatInterface({ conversation, updateConversation }: Chat
     setMessages(conversation.messages || []);
   }, [conversation]);
 
+  // Update conversation title and lastMessage when messages change.
   useEffect(() => {
     const lastMsg = messages.length > 0 ? (messages[messages.length - 1].text || "") : "";
-    updateConversation({ ...conversation, messages, lastMessage: lastMsg });
+    // Find the first user message; if available, use its first 20 characters as title.
+    const userMsg = messages.find(m => m.isUser)?.text;
+    const updatedTitle = userMsg ? userMsg.slice(0, 20) : conversation.title;
+    updateConversation({ ...conversation, messages, lastMessage: lastMsg, title: updatedTitle });
   }, [messages, conversation, updateConversation]);
 
   const handleSendMessage = async (text: string) => {
