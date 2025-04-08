@@ -5,3 +5,6 @@ otel-stok-chat(1.1.1)/package-lock.json
 otel-stok-chat(1.1.2)/package-lock.json
 trial-1/package-lock.json
 yedek/package-lock.json
+
+# Ignore all package-lock.json files in any directory
+**/package-lock.json
